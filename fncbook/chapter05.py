@@ -120,25 +120,16 @@ def fdweights(t, m):
             c = 1
         else:  # generic recursion
             if k < r:
-                c = t[r] * weight(t, m, r - 1, k) - m * weight(t, m - 1, r - 1, k)
-                c = c / (t[r] - t[k])
+                denom = t[r] - t[k]
+                c = (t[r] * weight(t, m, r-1, k) - m * weight(t, m-1, r-1, k)) / denom
             else:
-                if r <= 1:
-                    numer = 1.0
-                else:
-                    numer = np.prod(t[r-1] - t[:r-1])
-                if r <= 0:
-                    denom = 1.0
-                else:
-                    denom = np.prod(t[r] - t[:r])
-                beta = numer / denom
-                c = weight(t, m - 1, r - 1, r - 1) - t[r-1] * weight(t, m, r - 1, r - 1)
-                c *= beta
+                beta = np.prod(t[r-1] - t[:r-1]) / np.prod(t[r] - t[:r])
+                c = beta * (m * weight(t, m-1, r-1, r-1) - t[r-1] * weight(t, m, r-1, r-1))
         return c
 
     r = len(t) - 1
     w = np.zeros(t.shape)
-    return [weight(t, m, r, k) for k in range(r + 1)]
+    return np.array([ weight(t, m, r, k) for k in range(r+1) ])
 
 def trapezoid(f, a, b, n):
     """
