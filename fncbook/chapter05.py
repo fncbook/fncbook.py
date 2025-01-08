@@ -1,29 +1,24 @@
 import numpy as np
 from numpy.linalg import solve
 
-def hatfun(x, t, k):
+def hatfun(t, k):
     """
-    hatfun(x, t, k)
+    hatfun(t, k)
 
-    Evaluate a piecewise linear "hat" function at x, where t is a vector of
+    Returns a piecewise linear "hat" function,  where t is a vector of
     n+1 interpolation nodes and k is an integer in 0:n giving the index of the node
     where the hat function equals one.
     """
     n = len(t) - 1
 
-    # Return correct node given mathematical index k, including fictitious choices.
-    def node(k):
-        if k < 0:
-            return 2 * t[0] - t[1]
-        elif k > n:
-            return 2 * t[n] - t[n - 1]
+    def evaluate(x):
+        if (k > 0) and (t[k-1] <= x) and (x <= t[k]):
+            return (x - t[k-1]) / (t[k] - t[k-1])
+        elif (k < n) and (t[k] <= x) and (x <= t[k+1]):
+            return (t[k+1] - x) / (t[k+1] - t[k])
         else:
-            return t[k]
-
-    H1 = (x - node(k - 1)) / (node(k) - node(k - 1))  # upward slope
-    H2 = (node(k + 1) - x) / (node(k + 1) - node(k))  # downward slope
-    H = np.minimum(H1, H2)
-    return np.maximum(0, H)
+            return 0
+    return evaluate
 
 def plinterp(t, y):
     """

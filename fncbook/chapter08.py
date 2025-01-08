@@ -72,9 +72,9 @@ def arnoldi(A, u, m):
     return Q, H
 
 
-def arngmres(A, b, m):
+def gmres(A, b, m):
     """
-    arngmres(A, b, m)
+    gmres(A, b, m)
 
     Do m iterations of GMRES for the linear system A*x=b. Return the final solution
     estimate x and a vector with the history of residual norms. (This function is for

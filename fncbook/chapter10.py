@@ -164,7 +164,7 @@ def bvp(phi, xspan, ga, gb, init):
         return f
 
     u = levenberg(residual, init.copy())
-    return x, u[:, -1]
+    return x, u[-1]
 
 
 def fem(c, s, f, a, b, n):

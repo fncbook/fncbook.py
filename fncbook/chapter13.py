@@ -95,7 +95,7 @@ def elliptic(f, g, m, xspan, n, yspan):
         return r
     
     # Solve the equation.
-    u = levenberg(residual, vec(np.zeros(X.shape)))[:, -1]
+    u = levenberg(residual, vec(np.zeros(X.shape)))[-1]
     U = unvec(u)
 
     def evaluate(xi, eta):
