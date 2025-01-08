@@ -12,12 +12,13 @@ def hatfun(t, k):
     n = len(t) - 1
 
     def evaluate(x):
-        if (k > 0) and (t[k-1] <= x) and (x <= t[k]):
-            return (x - t[k-1]) / (t[k] - t[k-1])
-        elif (k < n) and (t[k] <= x) and (x <= t[k+1]):
-            return (t[k+1] - x) / (t[k+1] - t[k])
-        else:
-            return 0
+        H = np.zeros(np.array(x).shape)
+        for (j, xj) in enumerate(x):
+            if (k > 0) and (t[k-1] <= xj) and (xj <= t[k]):
+                H[j] = (xj - t[k-1]) / (t[k] - t[k-1])
+            elif (k < n) and (t[k] <= xj) and (xj <= t[k+1]):
+                H[j] = (t[k+1] - xj) / (t[k+1] - t[k])
+        return H
     return evaluate
 
 def plinterp(t, y):
@@ -28,7 +29,13 @@ def plinterp(t, y):
     in t.
     """
     n = len(t) - 1
-    return lambda x: np.sum(y[k] * hatfun(x, t, k) for k in range(n + 1))
+    H = [hatfun(t, k) for k in range(n+1)]
+    def evaluate(x):
+        f = 0
+        for k in range(n+1):
+            f += y[k] * H[k](x)
+        return f
+    return evaluate
 
 def spinterp(t, y):
     """

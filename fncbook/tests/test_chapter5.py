@@ -1,6 +1,7 @@
 import fncbook as FNC  # The code to test
 from numpy import isclose
 import numpy as np
+from scipy.interpolate import interp1d
 
 f = lambda t: np.cos(5*t)
 t = np.array([-2,-0.5,0,1,1.5,3.5,4]) / 10
@@ -21,16 +22,15 @@ def test_fdweights():
 
 def test_hatfun():
     H = FNC.hatfun(t, 5)
-    assert isclose(H(0.22), (0.22 - t[4]) / (t[5] - t[4]))
-    assert isclose(H(0.38), (t[6] - 0.38) / (t[6] - t[5]))
-    assert H(0.06) == 0
-    assert H(t[5]) == 1
-    assert H(t[6]) == 0
-    assert H(t[0]) == 0
+    P = interp1d(t, [0,0,0,0,0,1,0], kind='linear')
+    x = np.array([0.22, 0.38, 0.06, t[5], t[6], t[0]])
+    assert isclose(H(x), P(x)).all()
 
 def test_plinterp():
-    p = FNC.plinterp(t, g(t))
-    assert isclose(p(0.22), g(t[4]) + (g(t[5]) - g(t[4])) * (0.22 - t[4]) / (t[5] - t[4]))
+    p = FNC.plinterp(t, f(t))
+    P = interp1d(t, f(t), kind='linear')
+    x = [-0.2, 0, 0.22, 0.38]
+    assert isclose(p(x), P(x)).all()
 
 def test_spinterp():
     S = FNC.spinterp(t, np.exp(t))
