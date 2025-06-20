@@ -37,9 +37,9 @@ def lufact(A):
     factors.
     """
     n = A.shape[0]     # detect the dimensions from the input
-    L = np.eye(n)      # ones on main diagonal, np.zeros elsewhere
+    L = np.eye(n)      # ones on main diagonal, zeros elsewhere
     U = np.zeros((n, n))
-    A_k = np.copy(A)   # make a working np.copy 
+    A_k = np.copy(A.astype(float))    # make a working copy 
 
     # Reduction by np.outer products
     for k in range(n-1):
@@ -60,9 +60,9 @@ def plufact(A):
     L = np.zeros((n, n))
     U = np.zeros((n, n))
     p = np.zeros(n, dtype=int)
-    A_k = np.copy(A)
+    A_k = np.copy(A.astype(float))
 
-    # Reduction by np.outer products
+    # Reduction by outer products
     for k in range(n):
         p[k] = np.argmax(abs(A_k[:, k]))
         U[k, :] = A_k[p[k], :]
