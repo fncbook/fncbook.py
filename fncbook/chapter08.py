@@ -13,15 +13,14 @@ def poweriter(A, numiter):
     """
     n = A.shape[0]
     x = np.random.randn(n)
-    x = x / np.linalg.norm(x, np.inf)
-    gamma = np.zeros(numiter)
+    x = x / np.linalg.norm(x)
+    beta = np.zeros(numiter)
     for k in range(numiter):
         y = A @ x
-        m = np.argmax(abs(y))
-        gamma[k] = y[m] / x[m]
-        x = y / y[m]
+        beta[k] = np.dot(x, y)
+        x = y / np.linalg.norm(y)
 
-    return gamma, x
+    return beta, x
 
 
 def inviter(A, s, numiter):
@@ -34,16 +33,16 @@ def inviter(A, s, numiter):
     """
     n = A.shape[0]
     x = np.random.randn(n)
-    x = x / np.linalg.norm(x, np.inf)
-    gamma = np.zeros(numiter)
+    x = x / np.linalg.norm(x)
+    beta = np.zeros(numiter)
     PL, U = lu(A - s * np.eye(n), permute_l=True)
     for k in range(numiter):
         y = np.linalg.solve(U, np.linalg.solve(PL, x))
-        m = np.argmax(abs(y))
-        gamma[k] = x[m] / y[m] + s
-        x = y / y[m]
+        alpha = np.dot(x, y)
+        beta[k] = (1 / alpha) + s
+        x = y / np.linalg.norm(y)
 
-    return gamma, x
+    return beta, x
 
 
 def arnoldi(A, u, m):
