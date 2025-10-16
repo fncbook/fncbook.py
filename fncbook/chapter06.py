@@ -13,7 +13,8 @@ def euler(du_dt, tspan, u0, n):
     a, b = tspan
     h = (b - a) / n
     t = np.linspace(a, b, n+1)
-    u = np.tile(np.array(u0), (n+1, 1))
+    u = np.zeros((n+1, len(np.atleast_1d(u0))))
+    u[0] = u0
     for i in range(n):
         u[i+1] = u[i] + h * du_dt(t[i], u[i])
 
@@ -33,7 +34,8 @@ def ie2(du_dt, tspan, u0, n):
     t = np.linspace(a, b, n + 1)
 
     # Initialize output.
-    u = np.tile(np.array(u0), (n+1, 1))
+    u = np.zeros((n+1, len(np.atleast_1d(u0))))
+    u[0] = u0
 
     # Time stepping.
     for i in range(n):
@@ -56,8 +58,9 @@ def rk4(du_dt, tspan, u0, n):
     t = np.linspace(a, b, n + 1)
 
     # Initialize output.
-    u = np.tile(np.array(u0), (n+1, 1))
-
+    u = np.zeros((n+1, len(np.atleast_1d(u0))))
+    u[0] = u0
+    
     # Time stepping.
     for i in range(n):
         k1 = h * du_dt(t[i], u[i])
@@ -78,7 +81,7 @@ def rk23(du_dt, tspan, u0, tol):
     """
     # Initialize for the first time step.
     t = [tspan[0]]
-    u = np.array([u0])
+    u = np.array([np.atleast_1d(u0)])
     i = 0
     h = 0.5 * tol ** (1 / 3)
     s1 = du_dt(t[0], u[0])
@@ -132,7 +135,7 @@ def ab4(du_dt, tspan, u0, n):
 
     # Find starting values by RK4.
     ts, us = rk4(du_dt, [a, a + (k - 1) * h], u0, k - 1)
-    u = np.tile(np.array(u0), (n+1, 1))
+    u = np.zeros((n+1, len(np.atleast_1d(u0))))
     u[:k] = us[:k].T
 
     # Compute history of u' values, from newest to oldest.
@@ -158,7 +161,8 @@ def am2(du_dt, tspan, u0, n):
     t = np.linspace(a, b, n + 1)
 
     # Initialize output.
-    u = np.tile(np.array(u0), (n+1, 1))
+    u = np.zeros((n+1, len(np.atleast_1d(u0))))
+    u[0] = u0
 
     # Time stepping.
     for i in range(n):
